@@ -41,3 +41,93 @@ function isGameOver () {
     return playerScore === 5 || computerScore === 5
 }
 
+// ui
+
+const scoreInfo = document.getElementById("scoreInfo")
+const playerScorePara = document.getElementById("playerScore")
+const computerScorePara = document.getElementById("computerScore")
+const playerSign = document.getElementById('playerSign')
+const computerSign = document.getElementById('computerSign')
+const rockBtn = document.getElementById('rockBtn')
+const paperBtn = document.getElementById('paperBtn')
+const scissorsBtn = document.getElementById('scissorsBtn')
+const endgameModal = document.getElementById('endgameModal')
+const endgameMsg = document.getElementById('endgameMsg')
+const overlay = document.getElementById('overlay')
+const restartBtn = document.getElementById('restartBtn')
+
+rockBtn.addEventListener('click', () => handleClick('ROCK'))
+paperBtn.addEventListener('click', () => handleClick('PAPER'))
+scissorsBtn.addEventListener('click', () => handleClick('SCISSORS'))
+restartBtn.addEventListener('click', restartGame)
+overlay.addEventListener('click', closeEndGameModal)
+
+function handleClick(playerSelection) {
+    if (isGameOver()){
+        openEndGameModel ()
+        return
+    }
+
+    const computerSelection = getRandomChoice()
+    playRound(playerSelection, computerSelection)
+    updateChoices(playerSelection, computerSelection)
+    updateScore()
+
+    if (isGameOver()){
+        openEndGameModel()
+        setFinalMessage()
+    }
+}
+
+function updateChoices(playerSelection, computerSelection) {
+    const playerSignClassName = `fa-hand-${playerSelection.toLowerCase()}`
+    const computerSignClassName = `fa-hand-${computerSelection.toLowerCase()}`
+
+    playerSign.classList = `fas ${playerSignClassName} active`
+    computerSign.classList = `fas ${computerSignClassName} active`
+}
+
+
+function updateScore() {
+    if (roundWinner === 'tie'){
+        scoreInfo.textContent = `It's a tie!`;
+    } else if (roundWinner === 'player') {
+        scoreInfo.textContent = 'You won!';
+    } else if (roundWinner === 'computer'){
+        scoreInfo.textContent = 'You lost!';
+    }
+
+    playerScorePara.textContent = `Player: ${playerScore}`
+    computerScorePara.textContent = `Computer: ${computerScore}`
+}
+
+
+function openEndGameModel() {
+    endGameModal.classList.add('active')
+    overlay.classList.add('active')
+}
+
+function closeEndGameModal () {
+    endGameModal.classList.remove('active')
+    overlay.classList.remove('active')
+}
+
+
+function setFinalMessage() {
+    return playerScore > computerScore
+    ? (endGameMessage.textContent = "You won :)!")
+    : (endGameMessage.textContent = "you lost dude :/")
+}
+
+
+function restartGame() {
+    playerScore = 0
+    computerScore = 0
+    scoreInfo.textContent = 'Score'
+    playerScorePara.textContent = 'Player: 0'
+    computerScorePara.textContent = 'Computer: 0'
+    playerSign.classList.remove('active')
+    computerSign.classList.remove('active')
+    endGameModal.classList.remove('active')
+    overlay.classList.remove('active')
+  }
